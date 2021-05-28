@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  Default: agent
+  name: Default
 
 steps:
 - script: echo Hello, world!
