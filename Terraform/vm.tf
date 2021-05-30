@@ -5,7 +5,7 @@ resource "azurerm_network_interface" "vm-nic" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = azurerm_subnet.example.id
+    subnet_id                     = azurerm_subnet.public-subnet.id
     private_ip_address_allocation = "Dynamic"
   }
 }
@@ -18,7 +18,7 @@ resource "azurerm_windows_virtual_machine" "myvm" {
   admin_username      = "azureadmin"
   admin_password      = "Password@123"
   network_interface_ids = [
-    azurerm_network_interface.prash-rg.id,
+    azurerm_network_interface.vm-nic.id,
   ]
 
   os_disk {
