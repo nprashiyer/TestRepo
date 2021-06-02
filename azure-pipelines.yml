@@ -14,5 +14,26 @@ steps:
   displayName: 'Run a one-line script'
 - task: TerraformInstaller@0
   inputs:
-    terraformVersion: '0.12.3'
+    terraformVersion: '0.13'
 
+- task: TerraformTaskV2@2
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/LAW-TF'
+    backendServiceArm: 'Visual Studio Enterprise Subscription(6801865b-a083-44fb-b256-d2945feb3039)'
+    backendAzureRmResourceGroupName: 'cicd'
+    backendAzureRmStorageAccountName: 'prashcicdtest01'
+    backendAzureRmContainerName: 'tfstate'
+    backendAzureRmKey: 'terraform.tfstate'
+  
+- task: TerraformTaskV2@2
+  inputs:
+    provider: 'azurerm'
+    command: 'validate'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/LAW-TF'
+    backendServiceArm: 'Visual Studio Enterprise Subscription(6801865b-a083-44fb-b256-d2945feb3039)'
+    backendAzureRmResourceGroupName: 'cicd'
+    backendAzureRmStorageAccountName: 'prashcicdtest01'
+    backendAzureRmContainerName: 'tfstate'
+    backendAzureRmKey: 'terraform.tfstate'
