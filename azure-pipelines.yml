@@ -21,7 +21,7 @@ steps:
     provider: 'azurerm'
     command: 'init'
     workingDirectory: '$(System.DefaultWorkingDirectory)/LAW-TF'
-    backendServiceArm: 'Visual Studio Enterprise Subscription(6801865b-a083-44fb-b256-d2945feb3039)'
+    backendServiceArm: 'myserviceconnection'
     backendAzureRmResourceGroupName: 'cicd'
     backendAzureRmStorageAccountName: 'prashcicdtest01'
     backendAzureRmContainerName: 'tfstate'
