@@ -32,7 +32,7 @@ stages:
           Write-Host "##vso[task.setvariable variable=isValid;]false"
           }
 
-- stage: Publish to Artifact
+- stage: publish
   displayName: "Publish the template to artifacts"
   condition: eq(variables.isValid, true)
   pool:
