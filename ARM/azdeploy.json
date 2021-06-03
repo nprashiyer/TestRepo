@@ -29,14 +29,4 @@
             }
         }
     ]
-    "outputs": {
-        "provisionState": {
-            "type": "string",
-            "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces',parameters('workspacename'))).provisioningState]"
-        },
-        "workspaceId": {
-           "type": "string",
-           "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces',parameters('workspacename'))).customerId]"
-        }
-    }
 }
