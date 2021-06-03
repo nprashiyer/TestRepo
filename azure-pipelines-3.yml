@@ -20,6 +20,6 @@ steps:
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'MySub'
-    scriptType: 'ps'
+    scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: 'go version'
