@@ -24,6 +24,6 @@ steps:
     inlineScript: 'go version'
 
 - script: |
-    ID=$(echo hello | docker run --tty --volume $(tf_folder):/DATA accurics/terrascan:latest scan -d /DATA/)
-    docker logs $ID
+    docker run --name test --tty --volume $(tf_folder):/DATA accurics/terrascan:latest scan -d /DATA/
+    docker logs test
   displayName: Run Static Code analysis for Terraform using TerraScan
