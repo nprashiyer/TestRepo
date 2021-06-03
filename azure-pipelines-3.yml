@@ -25,5 +25,5 @@ steps:
 
 - script: |
     docker run --name test --tty --volume $(tf_folder):/DATA accurics/terrascan:latest scan -d /DATA/
-    docker logs test
+    docker logs test | grep High
   displayName: Run Static Code analysis for Terraform using TerraScan
