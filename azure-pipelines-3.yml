@@ -23,5 +23,5 @@ steps:
 - task: CmdLine@2
   inputs:
     script: |
-      pip3 install checkov
+      pip install checkov
       checkov -d $(System.DefaultWorkingDirectory)/LAW-TF/
