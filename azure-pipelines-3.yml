@@ -24,4 +24,4 @@ steps:
   inputs:
     script: |
       pip3 install checkov
-      checkov -d $(Build.SourceDirectory)/LAW-TF
+      checkov -d $(System.DefaultWorkingDirectory)/LAW-TF/
