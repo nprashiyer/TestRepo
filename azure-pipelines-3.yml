@@ -7,7 +7,7 @@ trigger:
 - main
 
 variables:
-  tf_folder: $(System.DefaultWorkingDirectory)
+  tf_folder: $(System.DefaultWorkingDirectory)/LAW-TF/
 
 pool:
   vmImage: ubuntu-latest
@@ -24,5 +24,6 @@ steps:
     inlineScript: 'go version'
 
 - script: |
-    docker run --tty --volume $(tf_folder):/DATA accurics/terrascan:latest scan -d /DATA/
-  displayName: Run Static Code analysis for Terraform using Checkov
+    ID=$(echo hello | docker run --tty --volume $(tf_folder):/DATA accurics/terrascan:latest scan -d /DATA/)
+    docker logs $ID
+  displayName: Run Static Code analysis for Terraform using TerraScan
