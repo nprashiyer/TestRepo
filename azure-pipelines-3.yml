@@ -23,5 +23,6 @@ steps:
 - task: CmdLine@2
   inputs:
     script: |
-      pip install checkov
+      sudo apt install python3-testresources
+      pip3 install checkov
       checkov -d $(System.DefaultWorkingDirectory)/LAW-TF/
