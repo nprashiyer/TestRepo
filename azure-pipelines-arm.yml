@@ -32,18 +32,26 @@ stages:
           Write-Host "##vso[task.setvariable variable=isValid;]false"
           }
 
-    - task: CopyFiles@2
-      condition: eq(variables.isValid, true)
-      inputs:
-        SourceFolder: '$(Build.SourceDirectory)/ARM/'
-        Contents: '**'
-        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+- stage: Publish to Artifact
+  displayName: "Publish the template to artifacts"
+  condition: eq(variables.isValid, true)
+  pool:
+    vmImage: 'ubuntu-latest'
+  jobs:
+    - job: publish
+      displayName: 'Publish ARM templat to Artifacts'
+      steps:
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: '$Build.SourceDirectory)/ARM/'
+          Contents: '*.json'
+          TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
-    - task: PublishBuildArtifacts@1
-      inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        ArtifactName: 'drop'
-        publishLocation: 'Container'
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'drop'
+          publishLocation: 'Container'
 
 - stage: deploy
   displayName: 'Deploy resources to  environment'
