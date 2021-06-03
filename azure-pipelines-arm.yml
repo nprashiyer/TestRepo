@@ -6,14 +6,64 @@
 trigger:
 - none
 
-pool:
-  vmImage: ubuntu-latest
+variables:
+  isValid: true
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+stages:
+- stage: Validation
+  displayName: 'Validate ARM Templates'
+  jobs:
+  - job: validate_arm_template
+    displayName: 'Validate ARM Template'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - script: echo provisioning to feature environment
+      displayName: 'Feature environment provisioning'
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'Visual Studio Enterprise Subscription(1)(6801865b-a083-44fb-b256-d2945feb3039)'
+        scriptType: 'ps'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          $test = Test-AzResourceGroupDeployment -TemplateFile $(Build.SourceDirectory)/ARM/azdeploy.json -TemplateParameterFile $(Build.SourceDirectory)/ARM/azdeploy.parameters.json
+          if($test){
+          Write-Host $test.Message
+          Write-Host "##vso[task.setvariable variable=isValid;]false"
+          }
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+    - task: CopyFiles@2
+      condition: eq(variables.isValid, true)
+      inputs:
+        SourceFolder: '$(Build.SourceDirectory)/ARM/'
+        Contents: '**'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
+
+- stage: deploy
+  displayName: 'Deploy resources to  environment'
+  jobs:
+  - job: deploy_resources
+    displayName: 'Deploy the reosurces'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    
+    - task: AzureResourceManagerTemplateDeployment@3
+      inputs:
+        deploymentScope: 'Resource Group'
+        azureResourceManagerConnection: 'Visual Studio Enterprise Subscription(1)(6801865b-a083-44fb-b256-d2945feb3039)'
+        subscriptionId: '6801865b-a083-44fb-b256-d2945feb3039'
+        action: 'Create Or Update Resource Group'
+        resourceGroupName: '$resouregroup'
+        location: '$location'
+        templateLocation: 'Linked artifact'
+        csmFile: '$(Build.ArtifactStagingDirectory)/drop/azdeploy.json'
+        csmParametersFile: '$(Build.ArtifactStagingDirectory)/drop/azdeploy.parameters.json'
+        deploymentMode: 'Incremental'
+    
