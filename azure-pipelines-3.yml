@@ -25,4 +25,4 @@ steps:
     script: |
       sudo apt install python3-testresources
       pip3 install checkov
-      checkov -f (System.DefaultWorkingDirectory)/LAW-TF/main.tf
+      checkov -f $(System.DefaultWorkingDirectory)/LAW-TF/main.tf
