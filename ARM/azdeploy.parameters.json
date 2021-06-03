@@ -1,0 +1,22 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspacename": {
+            "value": "ep9poclaw"
+        },
+        "location": {
+            "value": "westeurope"
+        },
+        "sku": {
+            "value": "pergb2018"
+        },
+        "tags": {
+            "value": {
+                "POC": "True",
+                "Project": "EP9",
+                "Owner": "Capability"
+            }
+        }
+    }
+}
