@@ -13,10 +13,6 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
-- task: GoTool@0
-  inputs:
-    version: '1.10'
-
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'MySub'
