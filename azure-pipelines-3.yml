@@ -27,6 +27,6 @@ steps:
       
       tar -xf terrascan.tar.gz terrascan && rm terrascan.tar.gz
       
-      sudi apt-install terrascan /usr/local/bin && rm terrascan
+      sudo apt-install terrascan /usr/local/bin && rm terrascan
       
       terrascan scan $(System.DefaultWorkingDirectory)/LAW-TF/
