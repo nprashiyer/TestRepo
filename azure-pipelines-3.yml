@@ -19,3 +19,9 @@ steps:
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: 'go version'
+
+- task: CmdLine@2
+  inputs:
+    script: |
+      pip3 install checkov
+      checkov $(Build.SourceDirectory)/LAW-TF
