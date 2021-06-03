@@ -7,7 +7,7 @@ trigger:
 - main
 
 variables:
-  tf_folder: $(System.DefaultWorkingDirectory)/LAW-TF
+  tf_folder: $(System.DefaultWorkingDirectory)
 
 pool:
   vmImage: ubuntu-latest
