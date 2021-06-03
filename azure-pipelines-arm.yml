@@ -34,7 +34,7 @@ stages:
 
 - stage: publish
   displayName: "Publish the template to artifacts"
-  condition: eq(variables.isValid, true)
+  condition: and(succeeded(), eq(variables.isValid, true))
   pool:
     vmImage: 'ubuntu-latest'
   jobs:
