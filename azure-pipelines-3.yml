@@ -23,6 +23,10 @@ steps:
 - task: CmdLine@2
   inputs:
     script: |
-      sudo apt install python3-testresources
-      pip3 install checkov
-      checkov -f $(System.DefaultWorkingDirectory)/LAW-TF/main.tf
+      curl -L "$(curl -s https://api.github.com/repos/accurics/terrascan/releases/latest | grep -o -E "https://.+?_Darwin_x86_64.tar.gz")" > terrascan.tar.gz
+      
+      tar -xf terrascan.tar.gz terrascan && rm terrascan.tar.gz
+      
+      install terrascan /usr/local/bin && rm terrascan
+      
+      terrascan scan $(System.DefaultWorkingDirectory)/LAW-TF/
