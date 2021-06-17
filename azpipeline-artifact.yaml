@@ -1,0 +1,50 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- none
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+- stage: Validation
+  displayName: 'Validate ARM Templates'
+  jobs:
+  - job: publish_template
+    displayName: 'Publish ARM Template'
+    steps:
+
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(System.DefaultWorkingDirectory)'
+        Contents: '*'
+        TargetFolder: '$(Pipeline.Workspace)'
+
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Pipeline.Workspace)'
+        artifact: 'templates'
+        publishLocation: 'pipeline'
+
+- stage: Check
+  displayName: 'Check ARM Templates'
+  jobs:
+  - job: dowlaod_template
+    displayName: 'Download ARM Template'
+    steps:
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'current'
+        artifactName: 'templates'
+        targetPath: '$(Pipeline.Workspace)'
+
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          ls
+          cat test1.txt
+        workingDirectory: '$(Pipeline.Workspace)'
