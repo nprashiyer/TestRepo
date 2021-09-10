@@ -1,0 +1,64 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- None
+
+pool:
+  vmImage: ubuntu-latest
+
+parameters:
+  - name: workspace
+    type: string
+    displayName: Workspace Name
+    default: restore
+
+steps:
+- task: DownloadSecureFile@1
+  name: mytfctoken
+  displayName: 'Download Terraform Cloud Secure Credentials'
+  inputs:
+    secureFile: 'credentials.tfrc.json'
+
+
+- task: TerraformInstaller@0
+  displayName: Install Terraform
+  inputs:
+    terraformVersion: '1.0.6'
+
+- task: CmdLine@2
+  displayName: 'Update Backend template with Workspace Name'
+  inputs:
+    script: |
+      sed -i 's/WORKSPACE-NAME/${{parameters.workspace}}/' provider-template.tf
+      ls
+      cat  provider-template.tf
+    workingDirectory: '$(System.DefaultWorkingDirectory)/DisasterRecovery'
+
+- task: Bash@3
+  displayName: 'Copy TFC Token to Path'
+  inputs:
+    targetType: 'inline'
+    script: 'cp $(mytfctoken.secureFilePath) ''/home/vsts/.terraform.d/credentials.tfrc.json'''
+
+- task: AzurePowerShell@5
+  displayName: 'Download TF State File from Az Storage'
+  inputs:
+    azureSubscription: 'Visual Studio Personal'
+    ScriptType: 'FilePath'
+    ScriptPath: 'DisasterRecovery/ImportExport-TFCState.ps1'
+    ScriptArguments: '-action "Download" -fileName "${{ parameters.workspace}}.tfstate"'
+    azurePowerShellVersion: 'LatestVersion'
+
+- task: PowerShell@2
+  displayName: Export the current state- version to Terraform Cloud Workspace
+  inputs:
+    targetType: 'inline'
+    script: |
+      $stateFileName = "${{parameters.workspace}}" + ".tfstate"
+      cp ../$stateFileName .
+      terraform init
+      terraform state push -force $stateFileName
+    workingDirectory: '$(System.DefaultWorkingDirectory)/DisasterRecovery'
