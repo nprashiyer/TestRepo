@@ -1,0 +1,33 @@
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+  
+variables:
+ - group: TFCloud
+
+resources:
+  webhooks:
+    - webhook: tfcloud          ### Webhook alias
+      connection: tfcloud    ### Incoming webhook service connection
+
+steps:
+- task: PowerShell@2
+  displayName: 'Import the current state version file'
+  inputs:
+    filePath: 'DisasterRecovery/Get-TFCStateFile.ps1'
+    arguments: '-tfcOrganization ${{ parameters.tfcloud.organization_name}} -workspaceName ${{ parameters.tfcloud.workspace_name}} -TOKEN $(TFCTOKEN)'
+
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: 'Write-Host "${{ parameters.tfcloud.workspace_name}}.tfstate"'
+
+- task: AzurePowerShell@5
+  displayName: Upload Current State Version to Storage Account
+  inputs:
+    azureSubscription: 'Visual Studio Personal'
+    ScriptType: 'FilePath'
+    ScriptPath: 'DisasterRecovery/ImportExport-TFCState.ps1'
+    ScriptArguments: '-action "Upload" -fileName "${{ parameters.tfcloud.workspace_name}}.tfstate"'
+    azurePowerShellVersion: 'LatestVersion'
